@@ -1,4 +1,4 @@
-package factory
+package files
 
 import (
 	"errors"
@@ -6,37 +6,22 @@ import (
 )
 
 const (
-	SMS   = 1
-	Email = 2
+	CSV = 1
+	JSON = 2
 )
-
-type Notification struct {
-	To      string
-	Message string
+type FileReader interface {
+	Read(path string) string
 }
 
-type Notifier interface {
-	SendNotification(Notification) string
-}
+// Using concept of Factory Pattern
+func GetFileReader(fileType int) (FileReader, error) {
 
-type SMSNotification struct{}
-func (n SMSNotification) SendNotification(notification Notification) string {
-	return fmt.Sprintf("`%s` was sent to number `%s` successfully!", notification.Message, notification.To)
-}
-
-type EmailNotification struct{}
-func (n EmailNotification) SendNotification(notification Notification) string {
-	return fmt.Sprintf("`%s` was sent to email `%s` successfully!", notification.Message, notification.To)
-}
-
-// Factory .....
-func GetNotifier(notifierType int) (Notifier, error) {
-	switch notifierType {
-		case SMS:
-			return new(SMSNotification), nil
-		case Email:
-			return new(EmailNotification), nil
+	switch fileType {
+		case CSV:
+			return new(CSVReader), nil
+		case JSON:
+			return new(JSONReader), nil
 		default:
-		return nil, errors.New(fmt.Sprintf("Notifier type %d not recognized.", notifierType))
+		return nil, errors.New(fmt.Sprintf("File type %d not recognized.", fileType))
 	}
 }

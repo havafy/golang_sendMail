@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
-
+import (
+	"fmt"
+	f "sendmail/files"
+)
 
 func main() {
 
@@ -14,8 +16,11 @@ func main() {
     // build Dockerfile
 
     // write README.md
+    
+	templateFile, _ := f.GetFileReader(f.JSON)
+	jsonContent := templateFile.Read("./email_template.json")
 
-	fmt.Println( float32(8 % 3))
+	fmt.Println("---file json:", jsonContent)
 
 }
 /*
