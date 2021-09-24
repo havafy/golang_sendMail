@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	f "sendmail/files"
+	"SendMail/Models"
+    m "SendMail/Mailer"
 )
 
 func main() {
@@ -17,10 +18,22 @@ func main() {
 
     // write README.md
     
-	templateFile, _ := f.GetFileReader(f.JSON)
-	jsonContent := templateFile.Read("./email_template.json")
+	// templateFile, _ := f.GetFileReader(f.EMAIL_TEMPLATE)
+    templateReader := Models.EmailTemplateReader{}
+	emailTemplate, _ := templateReader.Read("./SampleData/email_template.json")
 
-	fmt.Println("---file json:", jsonContent)
+	fmt.Println("---emailTemplate json:", emailTemplate)
+
+    //read customer file
+    customerReader := Models.CustomerReader{}
+    customers, _ := customerReader.Read("./SampleData/customers.csv")
+	fmt.Println("---customers:", customers)
+
+    // send email
+    smtpMailer, _ := m.GetMailer(m.ConfigMailer{
+        Type: "SMTP",
+    })
+    smtpMailer.Send()
 
 }
 /*

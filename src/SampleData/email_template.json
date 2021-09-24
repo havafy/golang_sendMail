@@ -1,5 +1,5 @@
 {
-    "from: "the marketing<mar@example.com>",
+    "from": "the marketing<mar@example.com>",
     "subject": "a new product...",
     "mineType": "text/plain",
     "body": "Hi {{TITLE}} {{FIRST_NAME}}"
