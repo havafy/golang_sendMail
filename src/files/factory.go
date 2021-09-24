@@ -3,6 +3,7 @@ package files
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 )
 
 const (
@@ -11,6 +12,13 @@ const (
 )
 type FileReader interface {
 	Read(path string) string
+}
+func fileLoader(path string) string{
+	b, err := ioutil.ReadFile(path) // just pass the file name
+    if err != nil {
+        fmt.Print(err)
+    }
+    return string(b) // convert content to a 'string'
 }
 
 // Using concept of Factory Pattern
