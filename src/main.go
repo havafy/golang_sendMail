@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"SendMail/Models"
-    m "SendMail/Mailer"
+    "SendMail/Mailer"
+    "SendMail/Config"
 )
 
 func main() {
@@ -18,6 +19,7 @@ func main() {
 
     // write README.md
     
+    configVars := Config.EnvLoader()
 	// templateFile, _ := f.GetFileReader(f.EMAIL_TEMPLATE)
     templateReader := Models.EmailTemplateReader{}
 	emailTemplate, _ := templateReader.Read("./SampleData/email_template.json")
@@ -25,17 +27,26 @@ func main() {
 	fmt.Println("---emailTemplate json:", emailTemplate)
 
     //read customer file
-    customerReader := Models.CustomerReader{}
-    customers, _ := customerReader.Read("./SampleData/customers.csv")
-	fmt.Println("---customers:", customers)
+    // customerReader := Models.CustomerReader{}
+    // customers, _ := customerReader.Read("./SampleData/customers.csv")
 
     // send email
-    smtpMailer, _ := m.GetMailer(m.ConfigMailer{
-        Type: "SMTP",
+    // set config values to Mailer
+    smtpMailer, _ := Mailer.GetMailer(Mailer.ConfigMailer{
+        Type:       configVars["EMAIL_TYPE"],
+        ApiKey:     configVars["EMAIL_API_KEY"],
+        Host:       configVars["EMAIL_HOST"],
+        Port:       configVars["EMAIL_PORT"],
+        User:       configVars["EMAIL_AUTH_USER"],
+        Password:   configVars["EMAIL_AUTH_PASSWORD"],
+        From:       configVars["EMAIL_FROM"],
+        From_name:  configVars["EMAIL_FROM_NAME"],
     })
-    smtpMailer.Send()
+
+    smtpMailer.Send(emailTemplate)
 
 }
+
 /*
 
 email_template.json
