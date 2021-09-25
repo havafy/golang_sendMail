@@ -3,6 +3,7 @@ package Mailer
 import (
 	"errors"
 	"fmt"
+	"SendMail/Models"
 )
 
 type ConfigMailer struct {
@@ -12,18 +13,20 @@ type ConfigMailer struct {
 	Port string
 	User string
 	Password string
+	From string
+	From_name string
 }
 type Mailer interface{
-	Send()
+	Send(customers []Models.Customer, template Models.EmailTemplateItem) (bool, error)
 }
 
 // Factory Pattern
 func GetMailer(c ConfigMailer) (Mailer, error) {
 	switch c.Type {
 		case "SMTP":
-			return new(SMTPMailer), nil
+			return &SMTPMailer{config: c}, nil
 		case "API":
-			return new(APIMailer), nil
+			return &APIMailer{config: c}, nil
 		default:
 		return nil, errors.New(fmt.Sprintf("Mailer type %d not recognized.", c.Type))
 	}

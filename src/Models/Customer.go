@@ -6,10 +6,8 @@ import (
     "os"
 	"encoding/csv"
 )
-type CustomerItems struct {
-    items []CustomerItem
-}
-type CustomerItem struct {
+
+type Customer struct {
 	Title string
     First_name string
     Last_name string
@@ -18,8 +16,8 @@ type CustomerItem struct {
 
 type CustomerReader struct {
 }
-func (f CustomerReader) Read(path string) (CustomerItems, error){
-    var results CustomerItems
+func (f CustomerReader) Read(path string) ([]Customer, error){
+    var results []Customer
 
     csvFile, err := os.Open(path)
 	if err != nil {
@@ -34,13 +32,13 @@ func (f CustomerReader) Read(path string) (CustomerItems, error){
     // skip first row
     for i := 1; i < len(csvLines); i++ {
         line := csvLines[i]
-        row := CustomerItem{
+        row := Customer{
             Title: line[0],
             First_name: line[1],
             Last_name: line[2],
             Email: line[3],
         }
-        results.items = append(results.items, row)
+        results = append(results, row)
     }
 	return results, nil
 }

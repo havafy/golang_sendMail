@@ -14,8 +14,7 @@ type EmailTemplateItem struct {
 	Body string `json: "body"`
 }
 
-type EmailTemplateReader struct {
-}
+type EmailTemplateReader struct { }
 func (f EmailTemplateReader) Read(path string) (EmailTemplateItem, error){
 	var results EmailTemplateItem
 
