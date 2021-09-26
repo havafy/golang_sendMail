@@ -21,12 +21,15 @@ func main() {
     
     configVars := Config.EnvLoader()
     templateReader := Models.EmailTemplateReader{}
-	emailTemplate, _ := templateReader.Read("./SampleData/email_template.json")
+	emailTemplate, _ := templateReader.Get("./SampleData/email_template.json")
 
     // read customer file
     customerReader := Models.CustomerReader{}
-    customers, _ := customerReader.Read("./SampleData/customers.csv")
+    customers, _ := customerReader.Get("./SampleData/customers.csv")
 
+    // report customer missing email address
+    //customers.out("./SampleData/errors.csv", )
+    
     // set config values to Mailer
     mailer, _ := Mailer.GetMailer(Mailer.ConfigMailer{
         Type:       configVars["EMAIL_TYPE"], // set SMTP or REST API mode on .env file
@@ -44,7 +47,7 @@ func main() {
     mailer.SetTemplate(emailTemplate)
 
     // start to send with customers and content
-    mailer.SendAll()
+   // mailer.SendAll()
 
     fmt.Println("Sent completed.")
 }

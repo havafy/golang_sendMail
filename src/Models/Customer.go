@@ -16,7 +16,7 @@ type Customer struct {
 
 type CustomerReader struct {
 }
-func (f CustomerReader) Read(path string) ([]Customer, error){
+func (f CustomerReader) Get(path string) ([]Customer, error){
     var results []Customer
 
     csvFile, err := os.Open(path)

@@ -15,7 +15,7 @@ type EmailTemplateItem struct {
 }
 
 type EmailTemplateReader struct { }
-func (f EmailTemplateReader) Read(path string) (EmailTemplateItem, error){
+func (f EmailTemplateReader) Get(path string) (EmailTemplateItem, error){
 	var results EmailTemplateItem
 
     file, err := os.Open(path)

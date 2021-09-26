@@ -10,7 +10,7 @@ func TestEmailTemplateReader(t *testing.T)  {
 
 	templateReader := &EmailTemplateReader{}
 
-	_, err := templateReader.Read(path)
+	_, err := templateReader.Get(path)
 
 	if err != nil {
 		t.Fatal("EmailTemplateReader must be returned")
