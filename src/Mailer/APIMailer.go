@@ -5,16 +5,26 @@ import (
 	"SendMail/Models"
 )
 type APIMailer struct {
-	config ConfigMailer
+	customers   []Models.Customer
+	template    Models.EmailTemplateItem
+	config      ConfigMailer
 }
 
-func (m APIMailer) Send(customers []Models.Customer, template Models.EmailTemplateItem) error{
-	// config := m.config
-	for _, customer := range customers {
-		// ... todo something with send by REST API
-		toList := []string{customer.Email}
-		fmt.Println("APIMailer sent: ", toList)
-	  }
+func (m *APIMailer) SetCustomers(customers []Models.Customer){
+	m.customers = customers
+}
 
-	  return nil
-  }
+func (m *APIMailer) SetTemplate(template Models.EmailTemplateItem){
+	m.template = template
+}
+func (m *APIMailer) SendAll() error{
+	for _, customer := range m.customers {
+		m.Send(customer, m.template.Subject, m.template.Body)
+	}
+	return nil
+}
+func (m *APIMailer) Send(customer Models.Customer, subject string, contentBody string) error{
+
+	fmt.Println("APIMailer sent: ", customer.Email)
+	return nil
+}

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-    "log"
 	"SendMail/Models"
     "SendMail/Mailer"
     "SendMail/Config"
@@ -29,7 +28,7 @@ func main() {
     customers, _ := customerReader.Read("./SampleData/customers.csv")
 
     // set config values to Mailer
-    smtpMailer, _ := Mailer.GetMailer(Mailer.ConfigMailer{
+    mailer, _ := Mailer.GetMailer(Mailer.ConfigMailer{
         Type:       configVars["EMAIL_TYPE"], // set SMTP or REST API mode on .env file
         ApiKey:     configVars["EMAIL_API_KEY"],
         Host:       configVars["EMAIL_HOST"],
@@ -39,11 +38,14 @@ func main() {
         From:       configVars["EMAIL_FROM"],
         From_name:  configVars["EMAIL_FROM_NAME"],
     })
+
+    // set data from input files
+    mailer.SetCustomers(customers)
+    mailer.SetTemplate(emailTemplate)
+
     // start to send with customers and content
-    err := smtpMailer.Send(customers, emailTemplate)
-    if err != nil{
-        log.Fatal("Have a wrong config on Mailer", err)
-    }
+    mailer.SendAll()
+
     fmt.Println("Sent completed.")
 }
 
