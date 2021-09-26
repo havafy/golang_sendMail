@@ -9,7 +9,7 @@ type SMTPMailer struct {
 	config ConfigMailer
 }
 
-func (m SMTPMailer) Send(customers []Models.Customer, template Models.EmailTemplateItem) (bool, error){
+func (m SMTPMailer) Send(customers []Models.Customer, template Models.EmailTemplateItem) error{
 	config := m.config
   for _, customer := range customers {
       // toList is list of email address that email is to be sent.
@@ -27,9 +27,9 @@ func (m SMTPMailer) Send(customers []Models.Customer, template Models.EmailTempl
 
       // handling the errors
       if err != nil {
-        return false, err
+        return err
       }
       fmt.Println("sent: ", customer.Email)
     }
-	return true, nil
+	return nil
 }

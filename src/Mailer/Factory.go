@@ -17,10 +17,10 @@ type ConfigMailer struct {
 	From_name string
 }
 type Mailer interface{
-	Send(customers []Models.Customer, template Models.EmailTemplateItem) (bool, error)
+	Send(customers []Models.Customer, template Models.EmailTemplateItem) error
 }
 
-// Factory Pattern
+// Implement Factory Pattern
 func GetMailer(c ConfigMailer) (Mailer, error) {
 	switch c.Type {
 		case "SMTP":
