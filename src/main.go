@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+    "log"
 	"SendMail/Models"
     "SendMail/Mailer"
     "SendMail/Config"
@@ -20,20 +21,16 @@ func main() {
     // write README.md
     
     configVars := Config.EnvLoader()
-	// templateFile, _ := f.GetFileReader(f.EMAIL_TEMPLATE)
     templateReader := Models.EmailTemplateReader{}
 	emailTemplate, _ := templateReader.Read("./SampleData/email_template.json")
 
-	fmt.Println("---emailTemplate json:", emailTemplate)
+    // read customer file
+    customerReader := Models.CustomerReader{}
+    customers, _ := customerReader.Read("./SampleData/customers.csv")
 
-    //read customer file
-    // customerReader := Models.CustomerReader{}
-    // customers, _ := customerReader.Read("./SampleData/customers.csv")
-
-    // send email
     // set config values to Mailer
     smtpMailer, _ := Mailer.GetMailer(Mailer.ConfigMailer{
-        Type:       configVars["EMAIL_TYPE"],
+        Type:       configVars["EMAIL_TYPE"], // set SMTP or REST API mode on .env file
         ApiKey:     configVars["EMAIL_API_KEY"],
         Host:       configVars["EMAIL_HOST"],
         Port:       configVars["EMAIL_PORT"],
@@ -42,9 +39,12 @@ func main() {
         From:       configVars["EMAIL_FROM"],
         From_name:  configVars["EMAIL_FROM_NAME"],
     })
-
-    smtpMailer.Send(emailTemplate)
-
+    // start to send with customers and content
+    err := smtpMailer.Send(customers, emailTemplate)
+    if err != nil{
+        log.Fatal("Have a wrong config on Mailer", err)
+    }
+    fmt.Println("Sent completed.")
 }
 
 /*
