@@ -3,6 +3,7 @@ package Builder
 import (
 	"SendMail/Lib"
 	"SendMail/Models"
+	"bytes"
 	"encoding/csv"
 	"encoding/json"
 	"io/ioutil"
@@ -27,7 +28,8 @@ func (e *Export) ToPath(outputPath string) {
 	jsonArr := e.Json()
 	for _, item := range jsonArr {
 		fileName := outputPath + "/" + strings.ReplaceAll(item.To, "@", "") + ".json"
-		file, _ := json.MarshalIndent(item, "", " ")
+
+		file, _ := JSONMarshal(item)
 		ioutil.WriteFile(fileName, file, 0644)
 	}
 
@@ -38,7 +40,7 @@ func (e *Export) ErrorToPath(pathFile string) {
 	// get the invalid customers
 	customers := e.getInvalidCustomers()
 	file, err := os.Create(pathFile)
-	checkError("Cannot create file", err)
+	checkError("Cannot create file: ", err)
 	defer file.Close()
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
@@ -77,8 +79,9 @@ func (e *Export) Json() []Models.CustomerEmail {
 	for _, customer := range e.customers {
 		// fill customer info to email template
 		if customer.Email != "" {
+
 			jsonArr = append(jsonArr, Models.CustomerEmail{
-				From:     "",
+				From:     e.template.From,
 				To:       customer.Email,
 				Subject:  e.template.Subject,
 				MineType: e.template.MineType,
@@ -88,6 +91,14 @@ func (e *Export) Json() []Models.CustomerEmail {
 	}
 	return jsonArr
 }
+func JSONMarshal(t interface{}) ([]byte, error) {
+	buffer := &bytes.Buffer{}
+	encoder := json.NewEncoder(buffer)
+	encoder.SetEscapeHTML(false)
+	err := encoder.Encode(t)
+	return buffer.Bytes(), err
+}
+
 func checkError(message string, err error) {
 	if err != nil {
 		log.Fatal(message, err)

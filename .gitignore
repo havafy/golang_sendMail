@@ -1,11 +1,11 @@
 
 /mnt/*
 # dependencies
-/*/node_modules
-/*/.pnp
-/*/.pnp.js
-/*/dist/
-/*/.env
+node_modules
+.pnp
+.pnp.js
+dist/
+.env
 /.idea/
 /example/
 
@@ -13,20 +13,20 @@
 
 /api/ormconfig.json
 # testing
-/*/coverage
+coverage
 
 /.vscode
 
-/*/ormconfig.json
+ormconfig.json
 
 # next.js
-/*/.next/
-/*/out/
+.next/
+out/
 
 # production
-/*/build
-/*/*.lock
-/*/package-lock.json
+build
+*.lock
+package-lock.json
 # misc
 .DS_Store
 *.pem
@@ -37,19 +37,19 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-/*/.env.local
-/*/.env.development.local
-/*/.env.test.local
-/*/.env.production.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # vercel
-/*/.vercel
+.vercel
 api/ormconfig.json
 
 # go lang
-/*/go.sum
-/*/tmp/
-/*/bin/
+go.sum
+tmp/
+bin/
 
 /tmp/
 /data/

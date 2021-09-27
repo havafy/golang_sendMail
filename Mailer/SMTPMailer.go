@@ -1,8 +1,11 @@
 package Mailer
 
 import (
+	"SendMail/Lib"
 	"SendMail/Models"
 	"errors"
+	"fmt"
+	"log"
 	"net/smtp"
 )
 
@@ -30,34 +33,40 @@ func (m *SMTPMailer) SendAll() error {
 		return errors.New("Missing SMTP config.")
 	}
 	for _, customer := range m.customers {
+		if customer.Email != "" {
+			// fill customer info to email template
+			contentBody := fillCustomerToTemplate(m.template.Body, customer)
 
-		// fill customer info to email template
-		contentBody := fillCustomerToTemplate(m.template.Body, customer)
-
-		// send email by SMTP protocol
-		m.Send(customer, m.template.Subject, contentBody)
-
+			// send email by SMTP protocol
+			err := m.Send(customer, m.template, contentBody)
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
 	}
 	return nil
 }
 
-func (m *SMTPMailer) Send(customer Models.Customer, subject string, contentBody string) error {
+func (m *SMTPMailer) Send(customer Models.Customer, template Models.EmailTemplate, contentBody string) error {
 	config := m.config
 	// toList is list of email address that email is to be sent.
-	toList := []string{customer.Email}
+	to := []string{customer.Email}
 	// This is the message to send in the mail
-	msg := []byte("From: " + config.From + "\r\n" +
+	from := Lib.Between(template.From, "<", ">")
+	msg := []byte("From: " + from + "\r\n" +
 		"To: " + customer.Email + "\r\n" +
-		"Subject: " + subject + "\r\n\r\n" +
-		contentBody + "\r\n")
-	body := []byte(msg)
+		"Subject: " + template.Subject + "\r\n\r\n" +
+		"Email " + contentBody + "\r\n")
+
 	auth := smtp.PlainAuth("", config.User, config.Password, config.Host)
 
-	err := smtp.SendMail(config.Host+":"+config.Port, auth, config.From, toList, body)
+	err := smtp.SendMail(config.Host+":"+config.Port, auth, from, to, msg)
 
 	// handling the errors
 	if err != nil {
+		log.Fatal(err)
 		return err
 	}
+	fmt.Println("Sent: ", customer.Email)
 	return nil
 }

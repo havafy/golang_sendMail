@@ -3,7 +3,6 @@ package Models
 import (
 	// "errors"
 	"encoding/csv"
-	"fmt"
 	"os"
 )
 
@@ -24,9 +23,8 @@ func (c *Customer) Get(path string) ([]Customer, error) {
 	defer csvFile.Close()
 	csvLines, err := csv.NewReader(csvFile).ReadAll()
 	if err != nil {
-		fmt.Println(err)
+		return results, err
 	}
-
 	// skip first row
 	for i := 1; i < len(csvLines); i++ {
 		line := csvLines[i]
