@@ -6,7 +6,7 @@ import (
 )
 type APIMailer struct {
 	customers   []Models.Customer
-	template    Models.EmailTemplateItem
+	template    Models.EmailTemplate
 	config      ConfigMailer
 }
 
@@ -14,7 +14,7 @@ func (m *APIMailer) SetCustomers(customers []Models.Customer){
 	m.customers = customers
 }
 
-func (m *APIMailer) SetTemplate(template Models.EmailTemplateItem){
+func (m *APIMailer) SetTemplate(template Models.EmailTemplate){
 	m.template = template
 }
 func (m *APIMailer) SendAll() error{

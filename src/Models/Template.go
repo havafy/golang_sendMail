@@ -2,29 +2,28 @@ package Models
 
 import (
 	// "errors"
-	"os"
 	"encoding/json"
 	"io/ioutil"
+	"os"
 )
 
-type EmailTemplateItem struct {
-	From string `json: "from"`
-	Subject string `json: "subject"`
-	MineType string `json: "mineType"`
-	Body string `json: "body"`
+type EmailTemplate struct {
+	From     string
+	Subject  string
+	MineType string
+	Body     string
 }
 
-type EmailTemplateReader struct { }
-func (f EmailTemplateReader) Get(path string) (EmailTemplateItem, error){
-	var results EmailTemplateItem
+func (t *EmailTemplate) Get(path string) (EmailTemplate, error) {
+	var result EmailTemplate
 
-    file, err := os.Open(path)
+	file, err := os.Open(path)
 	if err != nil {
-		return results, err
+		return result, err
 	}
 	defer file.Close()
-    byteValue, _ := ioutil.ReadAll(file)
-	_ = json.Unmarshal(byteValue, &results)
+	byteValue, _ := ioutil.ReadAll(file)
+	_ = json.Unmarshal(byteValue, &result)
 
-	return results, nil
+	return result, nil
 }

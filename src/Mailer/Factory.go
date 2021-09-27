@@ -20,7 +20,7 @@ type ConfigMailer struct {
 }
 type IMailer interface{
 	SetCustomers(customers []Models.Customer)
-	SetTemplate(template Models.EmailTemplateItem)
+	SetTemplate(template Models.EmailTemplate)
 	SendAll() error
 	Send(customer Models.Customer, subject string, contentTemplate string) error
 }

@@ -1,55 +1,54 @@
 package main
 
 import (
-	"fmt"
+	"SendMail/Builder"
+	"SendMail/Config"
+	"SendMail/Mailer"
 	"SendMail/Models"
-    "SendMail/Mailer"
-    "SendMail/Config"
+	"fmt"
 )
 
 func main() {
 
-    // read file CSV/JSON , implement Factory
+	configVars := Config.EnvLoader()
+	template := &Models.EmailTemplate{}
+	emailTemplate, _ := template.Get("./SampleData/email_template.json")
 
-    // fill data to template string , implement Factory
+	// read customer file
+	customer := &Models.Customer{}
+	customers, _ := customer.Get("./SampleData/customers.csv")
 
-    // send mail to SMTP/REST API, implement Factory
+	// report customer missing email address
+	export := &Builder.Export{}
+	export.SetCustomers(customers)
+	export.SetTemplate(emailTemplate)
 
-    // build Dockerfile
+	// export JSON file to a folder
+	export.ToPath("./SampleData/Export")
 
-    // write README.md
-    
-    configVars := Config.EnvLoader()
-    templateReader := Models.EmailTemplateReader{}
-	emailTemplate, _ := templateReader.Get("./SampleData/email_template.json")
+	// export invalid customer to CSV file
+	export.ErrorToPath("./SampleData/error.csv")
 
-    // read customer file
-    customerReader := Models.CustomerReader{}
-    customers, _ := customerReader.Get("./SampleData/customers.csv")
+	// set config values to Mailer
+	mailer, _ := Mailer.GetMailer(Mailer.ConfigMailer{
+		Type:      configVars["EMAIL_TYPE"], // set SMTP or REST API mode on .env file
+		ApiKey:    configVars["EMAIL_API_KEY"],
+		Host:      configVars["EMAIL_HOST"],
+		Port:      configVars["EMAIL_PORT"],
+		User:      configVars["EMAIL_AUTH_USER"],
+		Password:  configVars["EMAIL_AUTH_PASSWORD"],
+		From:      configVars["EMAIL_FROM"],
+		From_name: configVars["EMAIL_FROM_NAME"],
+	})
 
-    // report customer missing email address
-    //customers.out("./SampleData/errors.csv", )
-    
-    // set config values to Mailer
-    mailer, _ := Mailer.GetMailer(Mailer.ConfigMailer{
-        Type:       configVars["EMAIL_TYPE"], // set SMTP or REST API mode on .env file
-        ApiKey:     configVars["EMAIL_API_KEY"],
-        Host:       configVars["EMAIL_HOST"],
-        Port:       configVars["EMAIL_PORT"],
-        User:       configVars["EMAIL_AUTH_USER"],
-        Password:   configVars["EMAIL_AUTH_PASSWORD"],
-        From:       configVars["EMAIL_FROM"],
-        From_name:  configVars["EMAIL_FROM_NAME"],
-    })
+	// set data from input files
+	mailer.SetCustomers(customers)
+	mailer.SetTemplate(emailTemplate)
 
-    // set data from input files
-    mailer.SetCustomers(customers)
-    mailer.SetTemplate(emailTemplate)
+	// start to send with customers and content
+	// mailer.SendAll()
 
-    // start to send with customers and content
-   // mailer.SendAll()
-
-    fmt.Println("Sent completed.")
+	fmt.Println("Sent completed.")
 }
 
 /*

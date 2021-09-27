@@ -5,15 +5,15 @@ import (
 	"testing"
 )
 
-func TestEmailTemplateReader(t *testing.T)  {
+func TestEmailTemplate(t *testing.T)  {
 	path := "./email_template.json"
 
-	templateReader := &EmailTemplateReader{}
+	template := &EmailTemplate{}
 
-	_, err := templateReader.Get(path)
+	_, err := template.Get(path)
 
 	if err != nil {
-		t.Fatal("EmailTemplateReader must be returned")
+		t.Fatal("template must be returned")
 	}
 
 }
